@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Автопарк Мойынты–Кызылжар</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: путевой лист — sticky шапка с вкладками, рабочая область таблиц и бланков; акцент — сигнальный янтарь топливной колонки */
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --panel2:#f5f7f8; --line:#d3d9de; --fg:#16212b; --muted:#5b6873;
+  --accent:#d98a00; --accent-ink:#1b1300; --accent-soft:#fff1d6;
+  --steel:#2d4a63; --steel-soft:#e3ebf2;
+  --ok:#1f7a4a; --ok-soft:#ddf2e6; --warn:#a85d00; --warn-soft:#fde9cf; --bad:#b3261e; --bad-soft:#fbe0de;
+  --display:"Unbounded","IBM Plex Sans",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161c; --panel:#18212a; --panel2:#1d2832; --line:#2c3a46; --fg:#e4eaef; --muted:#93a1ad;
+  --accent:#f0a526; --accent-ink:#1b1300; --accent-soft:#3a2a0c;
+  --steel:#8fb3d1; --steel-soft:#1f3142;
+  --ok:#5fcf8f; --ok-soft:#17352a; --warn:#f2b155; --warn-soft:#3a2a12; --bad:#ff8a80; --bad-soft:#3d1c1a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161c; --panel:#18212a; --panel2:#1d2832; --line:#2c3a46; --fg:#e4eaef; --muted:#93a1ad;
+  --accent:#f0a526; --accent-ink:#1b1300; --accent-soft:#3a2a0c;
+  --steel:#8fb3d1; --steel-soft:#1f3142;
+  --ok:#5fcf8f; --ok-soft:#17352a; --warn:#f2b155; --warn-soft:#3a2a12; --bad:#ff8a80; --bad-soft:#3d1c1a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:12px 0}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.plate{font-family:var(--mono);font-weight:600;font-size:12px;border:2px solid var(--fg);border-radius:4px;padding:1px 6px;letter-spacing:.06em;white-space:nowrap}
+h1{font-family:var(--display);font-weight:700;font-size:18px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sync{margin-left:auto;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--ok)} .dot.loc{background:var(--warn)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-top:8px}
+nav a{padding:9px 12px;color:var(--muted);text-decoration:none;font-weight:500;border-bottom:3px solid transparent;white-space:nowrap}
+nav a:hover{color:var(--fg)}
+nav a.act{color:var(--fg);border-bottom-color:var(--accent)}
+main{padding-block:20px 48px;display:grid;gap:18px}
+h2{font-family:var(--display);font-weight:500;font-size:16px;margin:0}
+.sechead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sechead .sp{flex:1}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.pad{padding:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:2px}
+.kpi b{font-family:var(--mono);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kpi.hl{border-color:var(--accent);background:var(--accent-soft)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--panel2)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--mono)}
+td.wrap{white-space:normal;min-width:160px}
+.mono{font-family:var(--mono)}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-st{background:var(--steel-soft);color:var(--steel)}
+.p-ex{background:var(--panel2);color:var(--muted);border:1px dashed var(--line)}
+button,.btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:var(--r);padding:7px 12px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--steel)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,nav a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.pri:hover{filter:brightness(1.05)}
+button.lnk{border:0;background:none;padding:2px 6px;color:var(--steel)}
+button.lnk:hover{text-decoration:underline}
+button.danger{color:var(--bad)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;min-width:0}
+textarea{resize:vertical}
+label.f{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+label.f input,label.f select,label.f textarea{font-size:14px;width:100%}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.full{grid-column:1/-1}
+@media (max-width:640px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+.banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border:1px dashed var(--accent);background:var(--accent-soft);border-radius:var(--r)}
+.banner .sp{flex:1;min-width:200px}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(10,16,22,.55);z-index:20;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;width:min(640px,100%);display:grid;gap:14px;padding:18px}
+.modal h3{font-family:var(--display);font-weight:500;font-size:16px;margin:0}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.calc{font-family:var(--mono);font-size:13px;padding:8px 10px;background:var(--panel2);border-radius:var(--r)}
+/* schedule */
+.sched td,.sched th{text-align:center;padding:6px 4px}
+.sched td:first-child,.sched th:first-child{text-align:left;padding-left:10px;position:sticky;left:0;background:var(--panel);z-index:1}
+.sched th:first-child{background:var(--panel2)}
+.cell{width:46px;height:36px;border-radius:5px;border:1px solid var(--line);background:var(--panel);font-family:var(--mono);font-weight:600;padding:0;position:relative}
+.cell .tc{position:absolute;right:3px;bottom:1px;font-size:9px;color:var(--muted);font-weight:400}
+.c-Д{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.c-Н{background:var(--steel-soft);color:var(--steel);border-color:transparent}
+.c-В{background:var(--panel2);color:var(--muted)}
+.c-О{background:var(--accent-soft);color:var(--warn);border-color:transparent}
+.c-Б{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+th.today{color:var(--accent)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center}
+.legend i{display:inline-flex;width:22px;height:18px;border-radius:4px;align-items:center;justify-content:center;font-style:normal;font-family:var(--mono);font-weight:600;font-size:11px;margin-right:4px}
+/* talon */
+.talons{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:18px;align-items:start}
+@media (max-width:900px){.talons{grid-template-columns:minmax(0,1fr)}}
+.talon{background:var(--panel);border:1px solid var(--line);border-radius:8px;display:grid;grid-template-columns:minmax(0,1fr) 108px;overflow:hidden}
+.talon .stub .pill{font-size:11px;padding:1px 6px}
+.talon .main{padding:14px 16px;display:grid;gap:8px;min-width:0}
+.talon .stub{border-left:2px dashed var(--line);padding:14px 10px;display:grid;align-content:space-between;text-align:center;background:var(--panel2)}
+.talon .ttl{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.02em;text-transform:uppercase}
+.talon .no{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--accent)}
+.talon .row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted var(--line);padding-bottom:3px;font-size:13px}
+.talon .row span:first-child{color:var(--muted)}
+.talon .row span:last-child{text-align:right;min-width:0;overflow-wrap:anywhere}
+.talon .lit{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1}
+.talon .fuel{display:inline-block;border:2px solid var(--accent);color:var(--fg);border-radius:4px;padding:2px 8px;font-family:var(--mono);font-weight:600}
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px;color:var(--muted);margin-top:6px}
+.sig div{border-top:1px solid var(--muted);padding-top:2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:var(--r);z-index:30;font-size:13px;max-width:calc(100% - 32px)}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr) 70px;gap:8px;align-items:center;font-size:13px}
+.bar .t{height:10px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.bar .t i{display:block;height:100%;background:var(--steel)}
+.bar .v{font-family:var(--mono);text-align:right}
+.auth{max-width:420px;margin:24px auto;display:grid;gap:14px}
+.auth form{display:grid;gap:12px}
+.err{color:var(--bad);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+</head><body>
+
+<header>
+  <div class="wrap">
+    <div class="hrow">
+      <div class="brand"><span class="plate">KZ</span><h1>Автопарк Мойынты–Кызылжар</h1></div>
+      <div class="sync" id="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">Подключение…</span><button class="lnk" id="logoutBtn" data-act="logout" hidden>Выйти</button></div>
+    </div>
+    <nav id="nav" hidden>
+      <a href="#obzor" data-v="obzor">Обзор</a>
+      <a href="#reysy" data-v="reysy">Рейсы</a>
+      <a href="#voditeli" data-v="voditeli">Водители</a>
+      <a href="#tehnika" data-v="tehnika">Техника</a>
+      <a href="#grafik" data-v="grafik">График</a>
+      <a href="#talony" data-v="talony">Талоны на топливо</a>
+      <a href="#admin" data-v="admin" id="navAdmin">Админ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+(function(){
+"use strict";
+const COLS=["drivers","vehicles","trips","schedule","coupons"];
+const S={drivers:[],vehicles:[],trips:[],schedule:[],coupons:[]};
+let db=null, mode="init", isAdmin=true, canTrip=true, loaded=false;
+let view="obzor";
+const ui={tripVeh:"",tripDrv:"",tripMonth:"",weekStart:null,talonSel:null,repMonth:"",exConfirm:false};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad2=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
+const today=()=>iso(new Date());
+const nowHM=()=>{const d=new Date();return pad2(d.getHours())+":"+pad2(d.getMinutes())};
+const fmtD=s=>s?s.slice(8,10)+"."+s.slice(5,7)+"."+s.slice(0,4):"—";
+const num=v=>{const n=parseFloat(String(v??"").replace(",","."));return isFinite(n)?n:0};
+const fmtN=(n,d=0)=>Number(n||0).toLocaleString("ru-RU",{maximumFractionDigits:d,minimumFractionDigits:0});
+const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const byId=(col,id)=>S[col].find(x=>x.id===id);
+const drvName=id=>{const d=byId("drivers",id);return d?d.fio:"—"};
+const vehName=id=>{const v=byId("vehicles",id);return v?v.plate+" · "+v.model:"—"};
+const vehPlate=id=>{const v=byId("vehicles",id);return v?v.plate:"—"};
+const MONTHS=["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+const monthLabel=m=>{if(!m)return"";const[y,mm]=m.split("-");return MONTHS[+mm-1]+" "+y};
+const curMonth=()=>today().slice(0,7);
+const mileage=t=>{const a=num(t.odoStart),b=num(t.odoEnd);return b>a?b-a:0};
+const daysTo=s=>{if(!s)return Infinity;return Math.round((new Date(s+"T00:00")-new Date(today()+"T00:00"))/864e5)};
+function toast(msg){const r=$("#toastRoot");r.innerHTML='<div class="toast" role="status">'+esc(msg)+'</div>';clearTimeout(toast.t);toast.t=setTimeout(()=>r.innerHTML="",2600)}
+
+/* ---------- store (Firebase) ---------- */
+let fdb=null, fbUser=null, me=null, unsubs=[], dataSubs=[], authMode="login";
+S.users=[];
+async function put(col,obj){
+  const id=obj.id||genId(); const data={...obj}; delete data.id; data.updatedAt=new Date().toISOString();
+  if(fbUser)data.updatedBy=fbUser.email||"";
+  try{await fdb.collection(col).doc(id).set(data)}
+  catch(e){ toast(e&&e.code==="permission-denied"?(col==="trips"?"Нет прав на изменение рейсов":"Это может делать только администратор"):"Не сохранилось, проверьте интернет"); throw e }
+  return id;
+}
+async function del(col,id){ try{await fdb.collection(col).doc(id).delete()}catch(e){toast(e&&e.code==="permission-denied"?"Это может делать только администратор":"Не удалилось");throw e} }
+const ROLE_T={admin:"администратор",dispatcher:"диспетчер",viewer:"просмотр",pending:"ожидает одобрения"};
+function setSync(){
+  const dot=$("#syncDot"),t=$("#syncTxt"),lo=$("#logoutBtn");
+  lo.hidden=!fbUser; $("#nav").hidden=mode!=="db";
+  if(mode==="db"){dot.className="dot on";t.textContent=(fbUser.email||"")+" · "+ROLE_T[me.role]}
+  else if(mode==="pending"){dot.className="dot loc";t.textContent=(fbUser&&fbUser.email)||""}
+  else if(mode==="auth"){dot.className="dot";t.textContent="Вход не выполнен"}
+  else{dot.className="dot";t.textContent="Подключение…"}
+}
+function stopData(){dataSubs.forEach(f=>f());dataSubs=[];COLS.forEach(c=>S[c]=[]);S.users=[];loaded=false}
+function startData(){
+  if(dataSubs.length)return;
+  let got=0;
+  COLS.forEach(col=>{
+    dataSubs.push(fdb.collection(col).onSnapshot(snap=>{
+      S[col]=snap.docs.map(d=>({id:d.id,...d.data()}));
+      if(!loaded){got++; if(got>=COLS.length)loaded=true}
+      render();
+    },err=>{toast("Нет доступа к данным");}));
+  });
+}
+function applyRole(){
+  const role=me&&me.role;
+  isAdmin=role==="admin"; canTrip=isAdmin||role==="dispatcher";
+  if(["admin","dispatcher","viewer"].includes(role)){
+    mode="db"; startData();
+    if(isAdmin&&!dataSubs.usersSub){dataSubs.usersSub=true;dataSubs.push(fdb.collection("users").onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{}))}
+  }else{ stopData(); mode="pending" }
+  navAdmin(); render();
+}
+function initStore(){
+  if(!window.firebase||!window.FIREBASE_CONFIG||!window.FIREBASE_CONFIG.apiKey){mode="noconfig";render();return}
+  firebase.initializeApp(window.FIREBASE_CONFIG); fdb=firebase.firestore();
+  firebase.auth().onAuthStateChanged(async u=>{
+    unsubs.forEach(f=>f());unsubs=[];stopData();fbUser=u;me=null;
+    if(!u){mode="auth";render();return}
+    mode="init";render();
+    const ref=fdb.collection("users").doc(u.uid);
+    let snap=null; try{snap=await ref.get()}catch(e){}
+    const base={email:u.email||"",name:u.displayName||"",createdAt:new Date().toISOString()};
+    if(!snap||!snap.exists){ try{await ref.set({...base,role:"admin"})}catch(e){ try{await ref.set({...base,role:"pending"})}catch(e2){} } }
+    else if(snap.data().role==="pending"&&u.emailVerified){ try{await ref.update({role:"admin"})}catch(e){} }
+    unsubs.push(ref.onSnapshot(s=>{me=s.exists?s.data():{role:"pending"};applyRole()},()=>{me={role:"pending"};applyRole()}));
+  });
+}
+function authErr(e){const c=e&&e.code||"";return({"auth/invalid-email":"Неверный формат email","auth/user-not-found":"Такой пользователь не найден","auth/wrong-password":"Неверный пароль","auth/invalid-credential":"Неверный email или пароль","auth/invalid-login-credentials":"Неверный email или пароль","auth/email-already-in-use":"Этот email уже зарегистрирован, войдите","auth/weak-password":"Пароль слишком короткий, нужно от 6 символов","auth/too-many-requests":"Слишком много попыток, подождите пару минут","auth/network-request-failed":"Нет интернета"})[c]||("Ошибка: "+(e&&e.message||c))}
+function vAuth(){
+  const reg=authMode==="register";
+  return '<div class="auth panel pad"><h2>'+(reg?"Регистрация":"Вход")+'</h2><p class="muted small" style="margin:0">'+(reg?"После регистрации администратор откроет вам доступ.":"Учёт рейсов, водителей, графика и талонов на ГСМ.")+'</p>'+
+  '<form id="authForm" novalidate>'+(reg?'<label class="f">ФИО<input id="a_name" autocomplete="name" required></label>':'')+
+  '<label class="f">Email<input id="a_email" type="email" autocomplete="email" required></label>'+
+  '<label class="f">Пароль<input id="a_pass" type="password" autocomplete="'+(reg?'new-password':'current-password')+'" required minlength="6"></label>'+
+  '<div class="err" id="a_err" role="alert"></div><button class="pri" type="submit">'+(reg?"Зарегистрироваться":"Войти")+'</button></form>'+
+  '<div class="filters"><button class="lnk" data-act="authToggle">'+(reg?"Уже есть аккаунт? Войти":"Нет аккаунта? Регистрация")+'</button>'+(reg?'':'<button class="lnk" data-act="authReset">Забыли пароль?</button>')+'</div></div>';
+}
+function vPending(){
+  const v=fbUser&&fbUser.emailVerified;
+  return '<div class="auth panel pad"><h2>Доступ ещё не открыт</h2><p style="margin:0">Вы вошли как <b>'+esc(fbUser.email)+'</b>. Администратор должен назначить вам роль во вкладке «Админ». Страница обновится сама, как только это произойдёт.</p>'+
+   (v?'':'<p class="small muted" style="margin:0">Если вы администратор, сначала подтвердите email: мы отправили письмо со ссылкой. После подтверждения нажмите «Я подтвердил».</p><div class="filters"><button data-act="verifySend">Отправить письмо ещё раз</button><button class="pri" data-act="verifyCheck">Я подтвердил</button></div>')+'</div>';
+}
+document.addEventListener("submit",async e=>{
+  if(e.target.id!=="authForm")return; e.preventDefault();
+  const em=$("#a_email").value.trim(), pw=$("#a_pass").value, err=$("#a_err"); err.textContent="";
+  try{
+    if(authMode==="register"){const nm=($("#a_name")||{}).value||""; if(!nm.trim()){err.textContent="Укажите ФИО";return}
+      const c=await firebase.auth().createUserWithEmailAndPassword(em,pw); await c.user.updateProfile({displayName:nm.trim()});
+      try{await c.user.sendEmailVerification()}catch(x){}
+      try{await fdb.collection("users").doc(c.user.uid).set({email:em,name:nm.trim(),role:"pending",createdAt:new Date().toISOString()},{merge:true})}catch(x){}
+    } else await firebase.auth().signInWithEmailAndPassword(em,pw);
+  }catch(x){err.textContent=authErr(x)}
+});
+/* ---------- routing ---------- */
+const VIEWS=["obzor","reysy","voditeli","tehnika","grafik","talony","admin"];
+function navAdmin(){const a=document.getElementById("navAdmin");if(a)a.hidden=!isAdmin;if(!isAdmin&&view==="admin"){location.hash="obzor"}}
+function route(){const h=(location.hash||"").slice(1);view=VIEWS.includes(h)?h:"obzor";document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("act",a.dataset.v===view));render()}
+window.addEventListener("hashchange",route);
+
+/* ---------- render ---------- */
+function render(){
+  setSync();
+  const app=$("#app");
+  if(mode==="noconfig"){app.innerHTML='<div class="panel empty">Сайт ещё не подключён к базе: заполните config.js.</div>';return}
+  if(mode==="auth"){app.innerHTML=vAuth();return}
+  if(mode==="pending"){app.innerHTML=vPending();return}
+  if(mode!=="db"||!loaded){app.innerHTML='<div class="panel empty">Загружаю данные автопарка…</div>';return}
+  if(view==="admin"&&!isAdmin){app.innerHTML='<div class="panel empty">Этот раздел только для администратора.</div>';return}
+  const fn={admin:vAdmin,obzor:vObzor,reysy:vTrips,voditeli:vDrivers,tehnika:vVehicles,grafik:vSchedule,talony:vTalons}[view];
+  // keep focus/scroll of filters
+  const sy=window.scrollY; app.innerHTML=exampleBanner()+fn(); window.scrollTo(0,sy);
+}
+function exampleBanner(){
+  const n=0;
+  if(!n)return"";
+  return '<div class="banner"><span class="pill p-ex">пример</span><span class="sp">Сейчас показаны примеры записей ('+n+'), чтобы было видно, как всё работает. Когда внесёте своих водителей и технику, примеры можно убрать.</span>'+
+   (isAdmin?(ui.exConfirm?'<button class="danger" data-act="exDel">Да, удалить примеры</button><button data-act="exCancel">Отмена</button>':'<button data-act="exAsk">Удалить примеры</button>'):'')+'</div>';
+}
+const exTag=r=>r.example?' <span class="pill p-ex">пример</span>':'';
+const addBtn=(act,txt)=>(act.startsWith("trip")?canTrip:isAdmin)?'<button class="pri" data-act="'+act+'">'+txt+'</button>':'';
+
+/* --- Обзор --- */
+function vObzor(){
+  const t=today(), m=ui.repMonth||curMonth();
+  const onLine=S.trips.filter(x=>x.status==="active");
+  const todayTrips=S.trips.filter(x=>x.date===t);
+  const mTrips=S.trips.filter(x=>(x.date||"").startsWith(m));
+  const km=mTrips.reduce((a,x)=>a+mileage(x),0);
+  const mCoup=S.coupons.filter(x=>(x.date||"").startsWith(m));
+  const lit=mCoup.reduce((a,x)=>a+num(x.liters),0);
+  const lic=S.drivers.filter(d=>daysTo(d.licExp)<=30).sort((a,b)=>daysTo(a.licExp)-daysTo(b.licExp));
+  const shiftsToday=S.schedule.filter(x=>x.date===t&&(x.code==="Д"||x.code==="Н"));
+  const months=[...new Set([curMonth(),...S.trips.map(x=>(x.date||"").slice(0,7)),...S.coupons.map(x=>(x.date||"").slice(0,7))].filter(Boolean))].sort().reverse();
+
+  let h='<div class="sechead"><h2>Сводка</h2><span class="sp"></span><label class="small muted" for="repMonth">Месяц</label><select id="repMonth" data-ui="repMonth">'+months.map(x=>'<option value="'+x+'"'+(x===m?' selected':'')+'>'+monthLabel(x)+'</option>').join("")+'</select></div>';
+  h+='<div class="kpis">'+
+    '<div class="kpi hl"><span>На линии сейчас</span><b>'+onLine.length+'</b><small class="muted">из '+S.vehicles.length+' ед. техники</small></div>'+
+    '<div class="kpi"><span>Рейсов сегодня</span><b>'+todayTrips.length+'</b><small class="muted">водителей на смене: '+shiftsToday.length+'</small></div>'+
+    '<div class="kpi"><span>Пробег за '+esc(MONTHS[+m.slice(5)-1])+'</span><b>'+fmtN(km)+'</b><small class="muted">км, '+mTrips.length+' рейсов</small></div>'+
+    '<div class="kpi"><span>Топливо по талонам</span><b>'+fmtN(lit)+'</b><small class="muted">л, талонов: '+mCoup.length+'</small></div>'+
+  '</div>';
+
+  // on line
+  h+='<div class="sechead"><h2>Сейчас в пути</h2><span class="sp"></span>'+addBtn("tripNew","Выпустить на линию")+'</div>';
+  if(!onLine.length) h+='<div class="panel empty">Все машины на базе. Нажмите «Выпустить на линию», чтобы открыть рейс.</div>';
+  else h+='<div class="tbl"><table><thead><tr><th>Госномер</th><th>Водитель</th><th>Маршрут</th><th>Выезд</th><th class="num">Одометр</th><th></th></tr></thead><tbody>'+
+    onLine.map(x=>'<tr><td class="mono">'+esc(vehPlate(x.vehicleId))+exTag(x)+'</td><td>'+esc(drvName(x.driverId))+'</td><td class="wrap">'+esc(x.from)+' → '+esc(x.to)+'</td><td class="mono">'+fmtD(x.date)+' '+esc(x.timeOut||"")+'</td><td class="num">'+fmtN(x.odoStart)+'</td><td>'+(canTrip?'<button class="lnk" data-act="tripClose" data-id="'+x.id+'">Вернулся</button>':'')+'</td></tr>').join("")+'</tbody></table></div>';
+
+  // per vehicle month
+  const rows=S.vehicles.map(v=>{
+    const tr=mTrips.filter(x=>x.vehicleId===v.id); const k=tr.reduce((a,x)=>a+mileage(x),0);
+    const l=mCoup.filter(x=>x.vehicleId===v.id).reduce((a,x)=>a+num(x.liters),0);
+    const norm=k*num(v.norm)/100;
+    const last=S.trips.filter(x=>x.vehicleId===v.id).sort((a,b)=>(b.date+b.timeOut).localeCompare(a.date+a.timeOut))[0];
+    return {v,tr:tr.length,k,l,norm,last};
+  });
+  const maxK=Math.max(1,...rows.map(r=>r.k));
+  h+='<div class="sechead"><h2>Техника за '+esc(monthLabel(m))+'</h2></div>';
+  if(!rows.length) h+='<div class="panel empty">Техника ещё не внесена. Добавьте машины во вкладке «Техника».</div>';
+  else{
+    h+='<div class="tbl"><table><thead><tr><th>Госномер</th><th>Марка</th><th>Где сейчас</th><th class="num">Рейсов</th><th class="num">Пробег, км</th><th class="num">Норма, л</th><th class="num">Выдано, л</th><th>Разница</th></tr></thead><tbody>'+
+    rows.map(r=>{
+      const diff=r.l-r.norm; let pill='<span class="muted">—</span>';
+      if(r.k>0||r.l>0){ if(Math.abs(diff)<=Math.max(5,r.norm*.1)) pill='<span class="pill p-ok">в норме</span>'; else if(diff>0) pill='<span class="pill p-warn">перерасход '+fmtN(diff)+' л</span>'; else pill='<span class="pill p-st">остаток '+fmtN(-diff)+' л</span>'; }
+      const where=r.last?(r.last.status==="active"?'<span class="pill p-warn">в пути</span> '+esc(r.last.to):'<span class="pill p-ok">на месте</span> '+esc(r.last.to)):'<span class="muted">нет рейсов</span>';
+      return '<tr><td class="mono">'+esc(r.v.plate)+exTag(r.v)+'</td><td>'+esc(r.v.model)+'</td><td class="wrap">'+where+'</td><td class="num">'+r.tr+'</td><td class="num">'+fmtN(r.k)+'</td><td class="num">'+fmtN(r.norm,1)+'</td><td class="num">'+fmtN(r.l)+'</td><td>'+pill+'</td></tr>';
+    }).join("")+'</tbody></table></div>';
+    h+='<div class="panel pad bars" aria-label="Пробег по машинам">'+rows.map(r=>'<div class="bar"><span class="mono">'+esc(r.v.plate)+'</span><span class="t"><i style="width:'+(r.k/maxK*100).toFixed(1)+'%"></i></span><span class="v">'+fmtN(r.k)+' км</span></div>').join("")+'</div>';
+  }
+
+  h+='<div class="sechead"><h2>Удостоверения водителей</h2></div>';
+  if(!lic.length) h+='<div class="panel empty">У всех водителей права действуют больше 30 дней.</div>';
+  else h+='<div class="tbl"><table><thead><tr><th>Водитель</th><th>№ ВУ</th><th>Действует до</th><th>Статус</th></tr></thead><tbody>'+lic.map(d=>{const n=daysTo(d.licExp);return'<tr><td>'+esc(d.fio)+'</td><td class="mono">'+esc(d.licNo)+'</td><td class="mono">'+fmtD(d.licExp)+'</td><td>'+(n<0?'<span class="pill p-bad">просрочено</span>':'<span class="pill p-warn">через '+n+' дн.</span>')+'</td></tr>'}).join("")+'</tbody></table></div>';
+  return h;
+}
+
+/* --- Рейсы --- */
+function vTrips(){
+  const months=[...new Set(S.trips.map(x=>(x.date||"").slice(0,7)).filter(Boolean))].sort().reverse();
+  let list=S.trips.slice().sort((a,b)=>((b.date||"")+(b.timeOut||"")).localeCompare((a.date||"")+(a.timeOut||"")));
+  if(ui.tripVeh)list=list.filter(x=>x.vehicleId===ui.tripVeh);
+  if(ui.tripDrv)list=list.filter(x=>x.driverId===ui.tripDrv);
+  if(ui.tripMonth)list=list.filter(x=>(x.date||"").startsWith(ui.tripMonth));
+  const km=list.reduce((a,x)=>a+mileage(x),0);
+  let h='<div class="sechead"><h2>Журнал рейсов</h2><span class="sp"></span><button data-act="tripCsv">Скачать CSV</button>'+addBtn("tripNew","Новый рейс")+'</div>';
+  h+='<div class="filters">'+
+    '<select data-ui="tripVeh" aria-label="Машина"><option value="">Вся техника</option>'+S.vehicles.map(v=>'<option value="'+v.id+'"'+(ui.tripVeh===v.id?' selected':'')+'>'+esc(v.plate+" · "+v.model)+'</option>').join("")+'</select>'+
+    '<select data-ui="tripDrv" aria-label="Водитель"><option value="">Все водители</option>'+S.drivers.map(d=>'<option value="'+d.id+'"'+(ui.tripDrv===d.id?' selected':'')+'>'+esc(d.fio)+'</option>').join("")+'</select>'+
+    '<select data-ui="tripMonth" aria-label="Месяц"><option value="">Все месяцы</option>'+months.map(m=>'<option value="'+m+'"'+(ui.tripMonth===m?' selected':'')+'>'+monthLabel(m)+'</option>').join("")+'</select>'+
+    '<span class="small muted">'+list.length+' рейсов · '+fmtN(km)+' км</span></div>';
+  if(!list.length) return h+'<div class="panel empty">Рейсов пока нет. Нажмите «Новый рейс»: укажите машину, водителя, откуда и куда, показания одометра.</div>';
+  h+='<div class="tbl"><table><thead><tr><th>Дата</th><th>Госномер</th><th>Водитель</th><th>Откуда → куда</th><th>Цель</th><th>Выезд</th><th>Возврат</th><th class="num">Одометр</th><th class="num">Пробег</th><th>Статус</th><th></th></tr></thead><tbody>'+
+   list.map(x=>'<tr><td class="mono">'+fmtD(x.date)+'</td><td class="mono">'+esc(vehPlate(x.vehicleId))+exTag(x)+'</td><td>'+esc(drvName(x.driverId))+'</td><td class="wrap">'+esc(x.from)+' → '+esc(x.to)+'</td><td class="wrap">'+esc(x.purpose||"")+'</td><td class="mono">'+esc(x.timeOut||"")+'</td><td class="mono">'+esc(x.timeIn||"")+'</td><td class="num">'+fmtN(x.odoStart)+(x.odoEnd?' – '+fmtN(x.odoEnd):'')+'</td><td class="num">'+(mileage(x)?fmtN(mileage(x)):'—')+'</td><td>'+(x.status==="active"?'<span class="pill p-warn">в пути</span>':'<span class="pill p-ok">завершён</span>')+'</td><td>'+
+   (canTrip?(x.status==="active"?'<button class="lnk" data-act="tripClose" data-id="'+x.id+'">Вернулся</button>':'')+'<button class="lnk" data-act="tripEdit" data-id="'+x.id+'">Изменить</button>':'')+'</td></tr>').join("")+'</tbody></table></div>';
+  return h;
+}
+
+/* --- Водители --- */
+function vDrivers(){
+  let h='<div class="sechead"><h2>Водители</h2><span class="sp"></span>'+addBtn("drvNew","Зарегистрировать водителя")+'</div>';
+  if(!S.drivers.length) return h+'<div class="panel empty">Водителей пока нет. Нажмите «Зарегистрировать водителя»: ФИО, ИИН, телефон, категории и срок водительского удостоверения.</div>';
+  const list=S.drivers.slice().sort((a,b)=>(a.fio||"").localeCompare(b.fio||"","ru"));
+  h+='<div class="tbl"><table><thead><tr><th>ФИО</th><th>ИИН</th><th>Телефон</th><th>Категории</th><th>№ ВУ</th><th>ВУ до</th><th>Закреплён за</th><th>Статус</th><th class="num">Рейсов</th><th></th></tr></thead><tbody>'+
+   list.map(d=>{const n=daysTo(d.licExp);const lp=!d.licExp?'':n<0?' <span class="pill p-bad">просрочено</span>':n<=30?' <span class="pill p-warn">'+n+' дн.</span>':'';
+    const st={work:'<span class="pill p-ok">работает</span>',vac:'<span class="pill p-st">отпуск</span>',sick:'<span class="pill p-bad">больничный</span>',off:'<span class="pill p-ex">уволен</span>'}[d.status||"work"];
+    return '<tr><td>'+esc(d.fio)+exTag(d)+'</td><td class="mono">'+esc(d.iin)+'</td><td class="mono">'+esc(d.phone)+'</td><td class="mono">'+esc(d.cats)+'</td><td class="mono">'+esc(d.licNo)+'</td><td class="mono">'+fmtD(d.licExp)+lp+'</td><td class="mono">'+(d.vehicleId?esc(vehPlate(d.vehicleId)):'—')+'</td><td>'+st+'</td><td class="num">'+S.trips.filter(t=>t.driverId===d.id).length+'</td><td>'+(isAdmin?'<button class="lnk" data-act="drvEdit" data-id="'+d.id+'">Изменить</button>':'')+'</td></tr>'}).join("")+'</tbody></table></div>';
+  return h;
+}
+
+/* --- Техника --- */
+function vVehicles(){
+  let h='<div class="sechead"><h2>Техника</h2><span class="sp"></span>'+addBtn("vehNew","Добавить машину")+'</div>';
+  if(!S.vehicles.length) return h+'<div class="panel empty">Техники пока нет. Нажмите «Добавить машину»: госномер, марка, вид топлива и норма расхода.</div>';
+  h+='<div class="tbl"><table><thead><tr><th>Госномер</th><th>Марка, модель</th><th>Тип</th><th>Топливо</th><th class="num">Норма, л/100 км</th><th class="num">Одометр, км</th><th>Закреплённый водитель</th><th>Состояние</th><th></th></tr></thead><tbody>'+
+   S.vehicles.map(v=>{const odo=Math.max(num(v.odo),...S.trips.filter(t=>t.vehicleId===v.id).map(t=>Math.max(num(t.odoEnd),num(t.odoStart))));
+    const drv=S.drivers.find(d=>d.vehicleId===v.id);
+    const active=S.trips.some(t=>t.vehicleId===v.id&&t.status==="active");
+    const st=v.state==="repair"?'<span class="pill p-bad">в ремонте</span>':active?'<span class="pill p-warn">в пути</span>':'<span class="pill p-ok">на базе</span>';
+    return '<tr><td class="mono">'+esc(v.plate)+exTag(v)+'</td><td>'+esc(v.model)+'</td><td>'+esc(v.kind)+'</td><td><span class="pill p-st">'+esc(v.fuel)+'</span></td><td class="num">'+esc(v.norm)+'</td><td class="num">'+fmtN(odo)+'</td><td>'+(drv?esc(drv.fio):'—')+'</td><td>'+st+'</td><td>'+(isAdmin?'<button class="lnk" data-act="vehEdit" data-id="'+v.id+'">Изменить</button>':'')+'</td></tr>'}).join("")+'</tbody></table></div>';
+  return h;
+}
+
+/* --- График --- */
+const CODES=["","Д","Н","В","О","Б"];
+const CODE_T={"Д":"дневная смена","Н":"ночная смена","В":"выходной","О":"отпуск","Б":"больничный"};
+function mondayOf(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
+function vSchedule(){
+  if(!ui.weekStart)ui.weekStart=mondayOf(new Date());
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(ui.weekStart);d.setDate(d.getDate()+i);return iso(d)});
+  const wd=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]; const t=today();
+  const drv=S.drivers.filter(d=>d.status!=="off").sort((a,b)=>(a.fio||"").localeCompare(b.fio||"","ru"));
+  const end=days[6];
+  let h='<div class="sechead"><h2>График выходов</h2><span class="sp"></span><button data-act="wkPrev" aria-label="Предыдущая неделя">←</button><span class="mono">'+fmtD(days[0])+' – '+fmtD(end)+'</span><button data-act="wkNext" aria-label="Следующая неделя">→</button><button data-act="wkNow">Эта неделя</button>'+(isAdmin?'<button data-act="wkCopy">Копировать прошлую неделю</button>':'')+'</div>';
+  h+='<div class="legend">'+Object.entries(CODE_T).map(([k,v])=>'<span><i class="c-'+k+'">'+k+'</i>'+v+'</span>').join("")+'<span>Нажмите на клетку, чтобы сменить отметку. Цифра в углу — рейсы за день.</span></div>';
+  if(!drv.length) return h+'<div class="panel empty">Сначала зарегистрируйте водителей во вкладке «Водители».</div>';
+  h+='<div class="tbl sched"><table><thead><tr><th>Водитель</th>'+days.map((d,i)=>'<th class="'+(d===t?'today':'')+'">'+wd[i]+'<br><span class="mono small">'+d.slice(8)+'.'+d.slice(5,7)+'</span></th>').join("")+'<th class="num">Смен</th></tr></thead><tbody>'+
+   drv.map(d=>{let cnt=0;const cells=days.map(day=>{const r=S.schedule.find(x=>x.driverId===d.id&&x.date===day);const c=r?r.code:"";if(c==="Д"||c==="Н")cnt++;
+     const tc=S.trips.filter(x=>x.driverId===d.id&&x.date===day).length;
+     return '<td><button class="cell'+(c?' c-'+c:'')+'" data-act="cell" data-d="'+d.id+'" data-day="'+day+'" '+(isAdmin?'':'disabled ')+'aria-label="'+esc(d.fio)+', '+fmtD(day)+': '+(CODE_T[c]||"нет отметки")+'">'+(c||"·")+(tc?'<span class="tc">'+tc+'</span>':'')+'</button></td>'}).join("");
+     return '<tr><td>'+esc(d.fio)+'<div class="small muted mono">'+(d.vehicleId?esc(vehPlate(d.vehicleId)):'')+'</div></td>'+cells+'<td class="num">'+cnt+'</td></tr>'}).join("")+'</tbody></table></div>';
+  return h;
+}
+
+/* --- Талоны --- */
+function nextTalonNo(){return String(S.coupons.reduce((a,x)=>Math.max(a,parseInt(x.no,10)||0),0)+1).padStart(6,"0")}
+function talonCard(c){
+  if(!c) return '<div class="panel empty">Выберите талон в списке или выпишите новый, чтобы увидеть бланк.</div>';
+  const v=byId("vehicles",c.vehicleId), d=byId("drivers",c.driverId);
+  return '<div class="talon" aria-label="Талон на топливо"><div class="main">'+
+   '<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap"><span class="ttl">Талон на ГСМ</span><span class="no">№ '+esc(c.no)+'</span></div>'+
+   '<div class="small muted">Стройка ВЛ Мойынты – Кызылжар</div>'+
+   '<div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><span class="lit">'+fmtN(c.liters,1)+'</span><span class="muted">литров</span><span class="fuel">'+esc(c.fuel)+'</span></div>'+
+   '<div class="row"><span>Дата выдачи</span><span class="mono">'+fmtD(c.date)+'</span></div>'+
+   '<div class="row"><span>Действителен до</span><span class="mono">'+fmtD(c.validTo)+'</span></div>'+
+   '<div class="row"><span>Автомобиль</span><span class="mono">'+esc(v?v.plate+" "+v.model:"—")+'</span></div>'+
+   '<div class="row"><span>Водитель</span><span>'+esc(d?d.fio:"—")+'</span></div>'+
+   '<div class="row"><span>АЗС / место заправки</span><span>'+esc(c.station||"—")+'</span></div>'+
+   '<div class="row"><span>Основание</span><span>'+esc(c.basis||"—")+'</span></div>'+
+   '<div class="sig"><div>Выдал: '+esc(c.issuer||"")+'</div><div>Получил: '+esc(d?d.fio.split(" ")[0]:"")+'</div></div>'+
+   '</div><div class="stub"><div><div class="small muted">корешок</div><div class="mono" style="font-weight:600">№ '+esc(c.no)+'</div></div><div><div class="mono" style="font-size:20px;font-weight:600">'+fmtN(c.liters,1)+'</div><div class="small muted">л '+esc(c.fuel)+'</div></div><div class="mono small">'+esc(v?v.plate:"")+'</div><div class="small">'+(c.used?'<span class="pill p-ok">погашен</span>':'<span class="pill p-warn">не погашен</span>')+'</div></div></div>';
+}
+function vTalons(){
+  const list=S.coupons.slice().sort((a,b)=>(b.no||"").localeCompare(a.no||""));
+  const sel=byId("coupons",ui.talonSel)||list[0]||null;
+  const m=curMonth(); const mL=S.coupons.filter(x=>(x.date||"").startsWith(m));
+  const byFuel={}; mL.forEach(x=>byFuel[x.fuel]=(byFuel[x.fuel]||0)+num(x.liters));
+  let h='<div class="sechead"><h2>Талоны на топливо</h2><span class="sp"></span>'+addBtn("talNew","Выписать талон")+'</div>';
+  h+='<div class="kpis">'+(Object.keys(byFuel).length?Object.entries(byFuel).map(([f,l])=>'<div class="kpi"><span>'+esc(f)+' · '+esc(MONTHS[+m.slice(5)-1])+'</span><b>'+fmtN(l)+'</b><small class="muted">литров</small></div>').join(""):'<div class="kpi"><span>Выдано в этом месяце</span><b>0</b><small class="muted">литров</small></div>')+
+    '<div class="kpi"><span>Не погашено</span><b>'+S.coupons.filter(x=>!x.used).length+'</b><small class="muted">талонов на руках</small></div></div>';
+  h+='<div class="talons"><div style="min-width:0">';
+  if(!list.length) h+='<div class="panel empty">Талонов пока нет. Нажмите «Выписать талон»: номер подставится сам.</div>';
+  else h+='<div class="tbl"><table><thead><tr><th>№</th><th>Дата</th><th>Госномер</th><th>Водитель</th><th>Топливо</th><th class="num">Литры</th><th>Статус</th><th></th></tr></thead><tbody>'+
+    list.map(c=>'<tr'+(sel&&sel.id===c.id?' style="background:var(--accent-soft)"':'')+'><td class="mono"><button class="lnk mono" data-act="talSel" data-id="'+c.id+'">'+esc(c.no)+'</button>'+exTag(c)+'</td><td class="mono">'+fmtD(c.date)+'</td><td class="mono">'+esc(vehPlate(c.vehicleId))+'</td><td>'+esc(drvName(c.driverId))+'</td><td>'+esc(c.fuel)+'</td><td class="num">'+fmtN(c.liters,1)+'</td><td>'+(c.used?'<span class="pill p-ok">погашен</span>':'<span class="pill p-warn">на руках</span>')+'</td><td>'+(isAdmin?'<button class="lnk" data-act="talToggle" data-id="'+c.id+'">'+(c.used?'Вернуть':'Погасить')+'</button><button class="lnk" data-act="talEdit" data-id="'+c.id+'">Изменить</button>':'')+'</td></tr>').join("")+'</tbody></table></div>';
+  h+='</div><div style="display:grid;gap:10px;min-width:0">'+talonCard(sel)+(sel?'<div class="filters"><button data-act="talDl" data-id="'+sel.id+'">Скачать бланк для печати</button><span class="small muted">Файл откроется в браузере, там есть кнопка «Печать».</span></div>':'')+'</div></div>';
+  return h;
+}
+
+
+/* --- Админ --- */
+function usersPanel(){
+  const list=S.users.slice().sort((a,b)=>(a.role==="pending"?0:1)-(b.role==="pending"?0:1)||(a.name||a.email||"").localeCompare(b.name||b.email||"","ru"));
+  const pend=list.filter(u=>u.role==="pending").length;
+  return '<div class="panel pad" style="display:grid;gap:10px"><div class="sechead"><b>Пользователи</b>'+(pend?'<span class="pill p-warn">ждут одобрения: '+pend+'</span>':'')+'</div>'+
+   '<span class="small muted">Новые люди регистрируются на этом сайте сами, затем вы назначаете им роль. Отправьте им адрес сайта.</span>'+
+   (list.length?'<div class="tbl"><table><thead><tr><th>ФИО</th><th>Email</th><th>Зарегистрирован</th><th>Роль</th><th></th></tr></thead><tbody>'+list.map(u=>'<tr><td>'+esc(u.name||"—")+(fbUser&&u.id===fbUser.uid?' <span class="pill p-st">вы</span>':'')+'</td><td class="mono">'+esc(u.email)+'</td><td class="mono">'+fmtD((u.createdAt||"").slice(0,10))+'</td><td><select data-role="'+u.id+'" aria-label="Роль"'+(fbUser&&u.id===fbUser.uid?' disabled':'')+'>'+Object.entries(ROLE_T).map(([k,v])=>'<option value="'+k+'"'+(u.role===k?' selected':'')+'>'+v+'</option>').join("")+'</select></td><td>'+(fbUser&&u.id===fbUser.uid?'':'<button class="lnk danger" data-act="userDel" data-id="'+u.id+'">Удалить</button>')+'</td></tr>').join("")+'</tbody></table></div>':'<div class="empty">Пока никто не зарегистрировался.</div>')+'</div>';
+}
+function vAdmin(){
+  const cnt=COLS.map(c=>[c,S[c].length]);
+  const names={drivers:"Водители",vehicles:"Техника",trips:"Рейсы",schedule:"Отметки графика",coupons:"Талоны"};
+  let h='<div class="sechead"><h2>Администратор</h2><span class="sp"></span><span class="pill p-ok">вы администратор</span></div>';
+  h+='<div class="panel pad" style="display:grid;gap:10px"><b>Кто что может</b><div class="tbl"><table><thead><tr><th>Роль</th><th>Как назначить</th><th>Рейсы</th><th>Водители, техника, график, талоны</th><th>Этот раздел</th></tr></thead><tbody>'+
+   '<tr><td><span class="pill p-ok">Администратор</span></td><td class="wrap">Роль «администратор» ниже</td><td>открывать, закрывать, менять, удалять</td><td>добавлять, менять, удалять</td><td>есть</td></tr>'+
+   '<tr><td><span class="pill p-st">Диспетчер</span></td><td class="wrap">Роль «диспетчер»</td><td>открывать, закрывать, менять</td><td>только смотреть</td><td>нет</td></tr>'+
+   '<tr><td><span class="pill p-ex">Просмотр</span></td><td class="wrap">Роль «просмотр»</td><td>только смотреть</td><td>только смотреть</td><td>нет</td></tr>'+
+   '</tbody></table></div><span class="small muted">Ограничения проверяются на сервере базы, а не только скрытием кнопок.</span></div>';
+  h+=usersPanel();
+  h+='<div class="panel pad" style="display:grid;gap:10px"><b>Данные</b><div class="kpis">'+cnt.map(([c,n])=>'<div class="kpi"><span>'+names[c]+'</span><b>'+n+'</b></div>').join("")+'</div>'+
+   '<div class="filters"><button data-act="backup">Скачать резервную копию (JSON)</button><button data-act="tripCsv">Скачать рейсы (CSV)</button></div></div>';
+  return h;
+}
+/* ---------- modal forms ---------- */
+function modal(title,body,onSave,extra){
+  $("#modalRoot").innerHTML='<div class="ov" data-act="ovClose"><form class="modal" id="mf" novalidate><h3>'+esc(title)+'</h3>'+body+'<div class="calc" id="mcalc" hidden></div><div class="mfoot">'+(extra||"")+'<button type="button" data-act="mClose">Отмена</button><button class="pri" type="submit">Сохранить</button></div></form></div>';
+  const f=$("#mf"); const first=f.querySelector("input,select"); if(first)first.focus();
+  f.addEventListener("submit",async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());
+    const bad=[...f.querySelectorAll("[required]")].find(i=>!i.value.trim()); if(bad){bad.focus();toast("Заполните поле: "+(bad.closest("label")?.firstChild?.textContent||""));return}
+    try{await onSave(fd);closeModal()}catch(err){}});
+  f.addEventListener("input",()=>f.dispatchEvent(new Event("calc")));
+  return f;
+}
+function closeModal(){$("#modalRoot").innerHTML=""}
+const fld=(name,label,val,attrs="",type="text",cls="")=>'<label class="f '+cls+'">'+label+'<input name="'+name+'" id="f_'+name+'" type="'+type+'" value="'+esc(val??"")+'" '+attrs+'></label>';
+const sel=(name,label,opts,val,attrs="",cls="")=>'<label class="f '+cls+'">'+label+'<select name="'+name+'" id="f_'+name+'" '+attrs+'>'+opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(val??"")?' selected':'')+'>'+esc(o[1])+'</option>').join("")+'</select></label>';
+const vehOpts=(blank)=>[...(blank?[["",blank]]:[]),...S.vehicles.filter(v=>v.state!=="off").map(v=>[v.id,v.plate+" · "+v.model])];
+const drvOpts=(blank)=>[...(blank?[["",blank]]:[]),...S.drivers.filter(d=>d.status!=="off").map(d=>[d.id,d.fio])];
+const PLACES=["База (вахтовый городок)","ст. Мойынты","ПС Мойынты","ст. Кызылжар","ПС Кызылжар","Перегон, трасса ВЛ","Склад ЖБИ","Карьер","Балхаш","Караганда","АЗС"];
+function placesList(){const s=new Set(PLACES);S.trips.forEach(t=>{if(t.from)s.add(t.from);if(t.to)s.add(t.to)});return '<datalist id="places">'+[...s].map(p=>'<option value="'+esc(p)+'">').join("")+'</datalist>'}
+
+function tripForm(t){
+  const isNew=!t; t=t||{date:today(),timeOut:nowHM(),status:"active"};
+  if(isNew&&!S.vehicles.length){toast("Сначала добавьте технику");location.hash="tehnika";return}
+  const body='<div class="grid2">'+
+    sel("vehicleId","Машина",vehOpts(),t.vehicleId,'required')+sel("driverId","Водитель",drvOpts("— выберите —"),t.driverId,'required')+
+    fld("from","Откуда",t.from,'list="places" required')+fld("to","Куда",t.to,'list="places" required')+
+    fld("purpose","Цель поездки, груз",t.purpose,'placeholder="напр. доставка стоек СК 22.1 на пикет 145"',"text","full")+
+    fld("date","Дата",t.date,'required',"date")+'<div class="grid2">'+fld("timeOut","Выезд",t.timeOut,"","time")+fld("timeIn","Возврат",t.timeIn,"","time")+'</div>'+
+    fld("odoStart","Одометр при выезде, км",t.odoStart,'inputmode="decimal" required')+fld("odoEnd","Одометр при возврате, км",t.odoEnd,'inputmode="decimal"')+
+    sel("status","Статус",[["active","в пути"],["done","завершён"]],t.status)+fld("note","Примечание",t.note)+'</div>'+placesList();
+  const f=modal(isNew?"Новый рейс":"Рейс от "+fmtD(t.date),body,async fd=>{
+    if(fd.odoEnd&&num(fd.odoEnd)<num(fd.odoStart)){toast("Одометр при возврате меньше, чем при выезде");throw 0}
+    if(fd.status==="done"&&!fd.odoEnd){toast("Укажите одометр при возврате");throw 0}
+    await put("trips",{...(t.id?t:{}),...fd,example:t.example||false}); toast(isNew?"Рейс открыт":"Рейс сохранён");
+  },(!isNew&&isAdmin)?'<button type="button" class="danger" data-act="delRec" data-col="trips" data-id="'+t.id+'" style="margin-right:auto">Удалить</button>':'');
+  const vs=f.querySelector("#f_vehicleId"), ds=f.querySelector("#f_driverId"), os=f.querySelector("#f_odoStart");
+  const fillFromVeh=()=>{const v=byId("vehicles",vs.value);if(!v)return;
+    if(isNew){const last=Math.max(num(v.odo),...S.trips.filter(x=>x.vehicleId===v.id).map(x=>num(x.odoEnd)));if(last&&!os.value)os.value=last;
+      const d=S.drivers.find(x=>x.vehicleId===v.id); if(d&&!ds.value)ds.value=d.id;}};
+  vs.addEventListener("change",()=>{if(isNew)os.value="";fillFromVeh()}); fillFromVeh();
+  const calc=$("#mcalc"); const upd=()=>{const a=num(f.odoStart.value),b=num(f.odoEnd.value),v=byId("vehicles",vs.value);
+    if(b>a){calc.hidden=false;calc.textContent="Пробег: "+fmtN(b-a)+" км"+(v&&num(v.norm)?" · по норме "+fmtN((b-a)*num(v.norm)/100,1)+" л "+v.fuel:"")}else calc.hidden=true};
+  f.addEventListener("calc",upd); upd();
+}
+function tripClose(t){
+  const v=byId("vehicles",t.vehicleId);
+  const body='<p class="muted" style="margin:0">'+esc(vehName(t.vehicleId))+' · '+esc(drvName(t.driverId))+'<br>'+esc(t.from)+' → '+esc(t.to)+', выезд '+fmtD(t.date)+' '+esc(t.timeOut||"")+', одометр '+fmtN(t.odoStart)+' км</p><div class="grid2">'+
+    fld("timeIn","Время возврата",nowHM(),"","time")+fld("odoEnd","Одометр при возврате, км","",'inputmode="decimal" required')+fld("note","Примечание",t.note,"","text","full")+'</div>';
+  const f=modal("Возврат на базу",body,async fd=>{
+    if(num(fd.odoEnd)<num(t.odoStart)){toast("Одометр при возврате меньше, чем при выезде");throw 0}
+    await put("trips",{...t,...fd,status:"done"}); toast("Рейс завершён: "+fmtN(num(fd.odoEnd)-num(t.odoStart))+" км");
+  });
+  const calc=$("#mcalc"); f.addEventListener("calc",()=>{const b=num(f.odoEnd.value),a=num(t.odoStart);if(b>a){calc.hidden=false;calc.textContent="Пробег: "+fmtN(b-a)+" км"+(v&&num(v.norm)?" · по норме "+fmtN((b-a)*num(v.norm)/100,1)+" л":"")}else calc.hidden=true});
+}
+function drvForm(d){
+  const isNew=!d; d=d||{status:"work",cats:"B, C"};
+  const body='<div class="grid2">'+fld("fio","ФИО",d.fio,'required placeholder="Фамилия Имя Отчество"',"text","full")+
+    fld("iin","ИИН",d.iin,'inputmode="numeric" maxlength="12" placeholder="12 цифр"')+fld("phone","Телефон",d.phone,'inputmode="tel" placeholder="+7 7__ ___ __ __"')+
+    fld("licNo","№ водительского удостоверения",d.licNo)+fld("licExp","ВУ действительно до",d.licExp,"","date")+
+    fld("cats","Категории",d.cats,'placeholder="B, C, CE"')+sel("vehicleId","Закреплённая машина",vehOpts("— нет —"),d.vehicleId)+
+    fld("medExp","Медсправка до",d.medExp,"","date")+sel("status","Статус",[["work","работает"],["vac","отпуск"],["sick","больничный"],["off","уволен"]],d.status)+
+    fld("note","Примечание",d.note,"","text","full")+'</div>';
+  modal(isNew?"Регистрация водителя":d.fio,body,async fd=>{
+    if(fd.iin&&!/^\d{12}$/.test(fd.iin)){toast("ИИН должен состоять из 12 цифр");throw 0}
+    await put("drivers",{...(d.id?d:{}),...fd,example:d.example||false}); toast(isNew?"Водитель зарегистрирован":"Сохранено");
+  },(!isNew&&isAdmin)?'<button type="button" class="danger" data-act="delRec" data-col="drivers" data-id="'+d.id+'" style="margin-right:auto">Удалить</button>':'');
+}
+function vehForm(v){
+  const isNew=!v; v=v||{fuel:"ДТ",state:"ok"};
+  const body='<div class="grid2">'+fld("plate","Госномер",v.plate,'required placeholder="123 ABC 09"')+fld("model","Марка, модель",v.model,'required placeholder="КамАЗ 43118"')+
+    sel("kind","Тип",[["Бортовой","Бортовой"],["Самосвал","Самосвал"],["Седельный тягач","Седельный тягач"],["Автокран","Автокран"],["Бурильно-крановая","Бурильно-крановая (БКМ)"],["Автовышка","Автовышка"],["Вахтовка","Вахтовый автобус"],["Легковой","Легковой / пикап"],["Спецтехника","Спецтехника"]],v.kind||"Бортовой")+
+    sel("fuel","Топливо",[["ДТ","ДТ (дизель)"],["АИ-92","АИ-92"],["АИ-95","АИ-95"],["Газ","Газ (пропан)"]],v.fuel)+
+    fld("norm","Норма расхода, л/100 км",v.norm,'inputmode="decimal" placeholder="напр. 32"')+fld("odo","Одометр на дату ввода, км",v.odo,'inputmode="decimal"')+
+    fld("vin","VIN / № шасси",v.vin)+sel("state","Состояние",[["ok","исправна"],["repair","в ремонте"],["off","списана"]],v.state)+'</div>';
+  modal(isNew?"Новая машина":v.plate,body,async fd=>{fd.plate=fd.plate.toUpperCase();await put("vehicles",{...(v.id?v:{}),...fd,example:v.example||false});toast(isNew?"Машина добавлена":"Сохранено")},
+    (!isNew&&isAdmin)?'<button type="button" class="danger" data-act="delRec" data-col="vehicles" data-id="'+v.id+'" style="margin-right:auto">Удалить</button>':'');
+}
+function talForm(c){
+  const isNew=!c;
+  if(isNew&&!S.vehicles.length){toast("Сначала добавьте технику");location.hash="tehnika";return}
+  const vd=new Date();vd.setDate(vd.getDate()+30);
+  c=c||{no:nextTalonNo(),date:today(),validTo:iso(vd),liters:"",fuel:"ДТ",issuer:(S.coupons.slice(-1)[0]||{}).issuer||""};
+  const body='<div class="grid2">'+fld("no","Номер талона",c.no,'required inputmode="numeric"')+fld("date","Дата выдачи",c.date,'required',"date")+
+    sel("vehicleId","Машина",vehOpts(),c.vehicleId,'required')+sel("driverId","Водитель",drvOpts("— выберите —"),c.driverId,'required')+
+    sel("fuel","Топливо",[["ДТ","ДТ"],["АИ-92","АИ-92"],["АИ-95","АИ-95"],["Газ","Газ"]],c.fuel)+fld("liters","Литров",c.liters,'required inputmode="decimal"')+
+    fld("station","АЗС / место заправки",c.station,'placeholder="напр. Helios, Балхаш или топливозаправщик"')+fld("validTo","Действителен до",c.validTo,"","date")+
+    fld("basis","Основание",c.basis,'placeholder="путевой лист, рейс, заявка"',"text","full")+fld("issuer","Выдал (ФИО)",c.issuer,"","text","full")+'</div>';
+  const f=modal(isNew?"Выписать талон":"Талон № "+c.no,body,async fd=>{
+    if(num(fd.liters)<=0){toast("Укажите количество литров");throw 0}
+    if(S.coupons.some(x=>x.no===fd.no&&x.id!==c.id)){toast("Талон с номером "+fd.no+" уже есть");throw 0}
+    const id=await put("coupons",{...(c.id?c:{}),...fd,used:c.used||false,example:c.example||false}); ui.talonSel=id; toast(isNew?"Талон № "+fd.no+" выписан":"Сохранено");
+  },(!isNew&&isAdmin)?'<button type="button" class="danger" data-act="delRec" data-col="coupons" data-id="'+c.id+'" style="margin-right:auto">Удалить</button>':'');
+  const vs=f.querySelector("#f_vehicleId"),ds=f.querySelector("#f_driverId"),fs=f.querySelector("#f_fuel");
+  const fill=()=>{const v=byId("vehicles",vs.value);if(!v)return;fs.value=v.fuel||fs.value;const d=S.drivers.find(x=>x.vehicleId===v.id);if(d&&isNew)ds.value=d.id};
+  vs.addEventListener("change",fill); if(isNew)fill();
+  // suggest liters from active/latest trip norm
+  const calc=$("#mcalc"); const upd=()=>{const v=byId("vehicles",vs.value);if(!v||!num(v.norm)){calc.hidden=true;return}
+    const m=(f.date.value||today()).slice(0,7); const km=S.trips.filter(t=>t.vehicleId===v.id&&(t.date||"").startsWith(m)).reduce((a,t)=>a+mileage(t),0);
+    const given=S.coupons.filter(x=>x.vehicleId===v.id&&(x.date||"").startsWith(m)&&x.id!==c.id).reduce((a,x)=>a+num(x.liters),0);
+    calc.hidden=false; calc.textContent="За месяц по "+v.plate+": пробег "+fmtN(km)+" км, норма "+fmtN(km*num(v.norm)/100,1)+" л, уже выдано "+fmtN(given)+" л"};
+  f.addEventListener("calc",upd); vs.addEventListener("change",upd); upd();
+}
+
+/* ---------- downloads ---------- */
+async function saveFile(filename,data,mime){
+  try{const u=URL.createObjectURL(new Blob([data],{type:mime}));const l=document.createElement("a");l.href=u;l.download=filename;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}
+  catch(e){toast("Файл не сохранён")}
+}
+function talonPrintHtml(c){
+  const v=byId("vehicles",c.vehicleId)||{}, d=byId("drivers",c.driverId)||{};
+  const one=(label)=>`<div class="t"><div class="h"><b>ТАЛОН НА ГСМ</b><span>№ ${esc(c.no)}</span></div><div class="s">Стройка ВЛ Мойынты – Кызылжар · ${label}</div>
+  <table><tr><td>Дата выдачи</td><td>${fmtD(c.date)}</td></tr><tr><td>Действителен до</td><td>${fmtD(c.validTo)}</td></tr>
+  <tr><td>Вид топлива</td><td><b>${esc(c.fuel)}</b></td></tr><tr><td>Количество</td><td><b>${fmtN(c.liters,1)} л</b> (${esc(litWords(num(c.liters)))})</td></tr>
+  <tr><td>Автомобиль</td><td>${esc((v.plate||"")+" "+(v.model||""))}</td></tr><tr><td>Водитель</td><td>${esc(d.fio||"")}</td></tr>
+  <tr><td>АЗС</td><td>${esc(c.station||"")}</td></tr><tr><td>Основание</td><td>${esc(c.basis||"")}</td></tr></table>
+  <div class="g"><div>Выдал: ${esc(c.issuer||"")} ________</div><div>Получил: ________</div><div>Заправил (АЗС): ________</div></div></div>`;
+  return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Талон ГСМ № ${esc(c.no)}</title><style>
+  body{font:13px/1.4 Arial,sans-serif;margin:20px;color:#000}.t{border:1.5px solid #000;padding:12px 14px;margin-bottom:14px;max-width:640px;page-break-inside:avoid}
+  .h{display:flex;justify-content:space-between;font-size:16px}.s{font-size:11px;margin:2px 0 8px}table{border-collapse:collapse;width:100%}td{border:1px solid #000;padding:4px 6px}td:first-child{width:38%}
+  .g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;font-size:11px}.cut{border-top:1px dashed #000;margin:4px 0 14px;max-width:640px;font-size:10px;text-align:center}
+  button{font-size:14px;padding:6px 14px;margin-bottom:14px}@media print{button{display:none}}</style></head><body>
+  <button onclick="window.print()">Печать</button>${one("экземпляр водителя")}<div class="cut">линия отреза</div>${one("корешок (остаётся у выдавшего)")}</body></html>`;
+}
+function litWords(n){ // простая пропись целых литров
+  n=Math.round(n); if(!n)return"ноль литров";
+  const u=["","один","два","три","четыре","пять","шесть","семь","восемь","девять"],t1=["десять","одиннадцать","двенадцать","тринадцать","четырнадцать","пятнадцать","шестнадцать","семнадцать","восемнадцать","девятнадцать"],
+  t=["","","двадцать","тридцать","сорок","пятьдесят","шестьдесят","семьдесят","восемьдесят","девяносто"],h=["","сто","двести","триста","четыреста","пятьсот","шестьсот","семьсот","восемьсот","девятьсот"];
+  const three=(x,fem)=>{const a=[];a.push(h[Math.floor(x/100)]);const r=x%100;if(r>=10&&r<20)a.push(t1[r-10]);else{a.push(t[Math.floor(r/10)]);let o=u[r%10];if(fem){if(r%10===1)o="одна";if(r%10===2)o="две"}a.push(o)}return a.filter(Boolean).join(" ")};
+  const form=(x,f)=>{const r=x%100,r1=x%10;if(r>=11&&r<=14)return f[2];if(r1===1)return f[0];if(r1>=2&&r1<=4)return f[1];return f[2]};
+  const th=Math.floor(n/1000),rest=n%1000;let s="";if(th)s+=three(th,true)+" "+form(th,["тысяча","тысячи","тысяч"])+" ";s+=three(rest,false);
+  return (s.trim()+" "+form(n,["литр","литра","литров"])).replace(/\s+/g," ");
+}
+function tripsCsv(){
+  const rows=[["Дата","Госномер","Марка","Водитель","Откуда","Куда","Цель","Выезд","Возврат","Одометр выезд","Одометр возврат","Пробег км","Статус"]];
+  S.trips.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")).forEach(x=>{const v=byId("vehicles",x.vehicleId)||{};rows.push([fmtD(x.date),v.plate||"",v.model||"",drvName(x.driverId),x.from,x.to,x.purpose||"",x.timeOut||"",x.timeIn||"",x.odoStart||"",x.odoEnd||"",mileage(x)||"",x.status==="active"?"в пути":"завершён"])});
+  return "﻿"+rows.map(r=>r.map(c=>'"'+String(c??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]"); if(!b)return;
+  const a=b.dataset.act, id=b.dataset.id;
+  if(a==="ovClose"&&e.target!==b)return;
+  switch(a){
+    case "ovClose": case "mClose": closeModal(); break;
+    case "tripNew": tripForm(); break;
+    case "tripEdit": tripForm(byId("trips",id)); break;
+    case "tripClose": tripClose(byId("trips",id)); break;
+    case "drvNew": drvForm(); break;
+    case "drvEdit": drvForm(byId("drivers",id)); break;
+    case "vehNew": vehForm(); break;
+    case "vehEdit": vehForm(byId("vehicles",id)); break;
+    case "talNew": talForm(); break;
+    case "talEdit": talForm(byId("coupons",id)); break;
+    case "talSel": ui.talonSel=id; render(); break;
+    case "talToggle": {const c=byId("coupons",id); await put("coupons",{...c,used:!c.used}).catch(()=>{}); break}
+    case "talDl": {const c=byId("coupons",id); saveFile("Талон ГСМ №"+c.no+".html",talonPrintHtml(c),"text/html"); break}
+    case "logout": firebase.auth().signOut(); location.hash="obzor"; break;
+    case "authToggle": authMode=authMode==="login"?"register":"login"; render(); break;
+    case "authReset": {const em=($("#a_email")||{}).value||""; if(!em.trim()){$("#a_err").textContent="Введите email, на него придёт ссылка для сброса";return}
+      try{await firebase.auth().sendPasswordResetEmail(em.trim());toast("Письмо для сброса пароля отправлено")}catch(x){$("#a_err").textContent=authErr(x)} break}
+    case "verifySend": try{await fbUser.sendEmailVerification();toast("Письмо отправлено")}catch(x){toast(authErr(x))} break;
+    case "verifyCheck": {await fbUser.reload(); fbUser=firebase.auth().currentUser; await fbUser.getIdToken(true);
+      if(!fbUser.emailVerified){toast("Email ещё не подтверждён");break}
+      try{await fdb.collection("users").doc(fbUser.uid).update({role:"admin"});toast("Готово")}catch(x){toast("Почта подтверждена. Ждите, когда администратор откроет доступ")} render(); break}
+    case "userDel": {if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Точно?";return} try{await fdb.collection("users").doc(id).delete();toast("Пользователь удалён")}catch(x){toast("Не удалилось")} break}
+    case "backup": saveFile("Автопарк резервная копия "+today()+".json",JSON.stringify(S,null,1),"application/json"); break;
+    case "tripCsv": saveFile("Рейсы автопарка "+today()+".csv",tripsCsv(),"text/csv"); break;
+    case "delRec": {
+      if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Точно удалить?";return}
+      await del(b.dataset.col,id).catch(()=>{}); closeModal(); toast("Удалено"); break}
+    case "wkPrev": ui.weekStart.setDate(ui.weekStart.getDate()-7); render(); break;
+    case "wkNext": ui.weekStart.setDate(ui.weekStart.getDate()+7); render(); break;
+    case "wkNow": ui.weekStart=mondayOf(new Date()); render(); break;
+    case "wkCopy": {
+      const days=[...Array(7)].map((_,i)=>{const d=new Date(ui.weekStart);d.setDate(d.getDate()+i);return d});
+      let n=0; for(const d of days){const p=new Date(d);p.setDate(p.getDate()-7);const pd=iso(p),cd=iso(d);
+        for(const r of S.schedule.filter(x=>x.date===pd)){ if(!S.schedule.some(x=>x.driverId===r.driverId&&x.date===cd)){await put("schedule",{id:r.driverId+"_"+cd,driverId:r.driverId,date:cd,code:r.code}).catch(()=>{});n++} } }
+      toast(n?"Скопировано отметок: "+n:"На прошлой неделе нечего копировать"); break}
+    case "cell": {
+      const did=b.dataset.d, day=b.dataset.day, key=did+"_"+day;
+      const r=S.schedule.find(x=>x.driverId===did&&x.date===day); const cur=r?r.code:"";
+      const nx=CODES[(CODES.indexOf(cur)+1)%CODES.length];
+      if(!nx){ if(r) await del("schedule",r.id).catch(()=>{}) }
+      else await put("schedule",{...(r||{id:key,driverId:did,date:day,example:false}),code:nx}).catch(()=>{});
+      break}
+    case "exAsk": ui.exConfirm=true; render(); break;
+    case "exCancel": ui.exConfirm=false; render(); break;
+    case "exDel": {ui.exConfirm=false; for(const c of COLS) for(const r of S[c].filter(x=>x.example)) await del(c,r.id).catch(()=>{}); toast("Примеры удалены"); render(); break}
+  }
+});
+document.addEventListener("change",async e=>{const rid=e.target.dataset&&e.target.dataset.role; if(rid){try{await fdb.collection("users").doc(rid).update({role:e.target.value});toast("Роль изменена")}catch(x){toast("Не удалось изменить роль")} return}
+  const k=e.target.dataset&&e.target.dataset.ui; if(!k)return; ui[k]=e.target.value; render()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#modalRoot").innerHTML)closeModal()});
+
+route();
+initStore();
+})();
+</script>
+
+</body></html>
